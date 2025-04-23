@@ -2,6 +2,16 @@
 
 import { useEffect, useState } from "react";
 
+interface Advocate {
+  firstName: string;
+  lastName: string;
+  city: string;
+  degree: string;
+  specialties: string[];
+  yearsOfExperience: number;
+  phoneNumber: number;
+}
+
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
   const [
@@ -19,16 +29,20 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e) => {
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const searchTerm = e.target.value;
 
-    document.getElementById(
-      "search-term",
-    ).innerHTML = searchTerm;
+    const searchTermElement =
+      document.getElementById("search-term");
+    if (searchTermElement !== null) {
+      searchTermElement.innerHTML = searchTerm;
+    }
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter(
-      (advocate) => {
+      (advocate: Advocate) => {
         return (
           advocate.firstName.includes(
             searchTerm,
@@ -41,9 +55,8 @@ export default function Home() {
           advocate.specialties.includes(
             searchTerm,
           ) ||
-          advocate.yearsOfExperience.includes(
-            searchTerm,
-          )
+          advocate.yearsOfExperience ===
+            parseInt(searchTerm)
         );
       },
     );
@@ -90,27 +103,29 @@ export default function Home() {
           </tr>
         </thead>
         <tbody>
-          {filteredAdvocates.map((advocate) => {
-            return (
-              <tr>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map(
-                    (s) => (
-                      <div>{s}</div>
-                    ),
-                  )}
-                </td>
-                <td>
-                  {advocate.yearsOfExperience}
-                </td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
+          {filteredAdvocates.map(
+            (advocate: Advocate) => {
+              return (
+                <tr key={advocate.phoneNumber}>
+                  <td>{advocate.firstName}</td>
+                  <td>{advocate.lastName}</td>
+                  <td>{advocate.city}</td>
+                  <td>{advocate.degree}</td>
+                  <td>
+                    {advocate.specialties.map(
+                      (s, i) => (
+                        <div key={i}>{s}</div>
+                      ),
+                    )}
+                  </td>
+                  <td>
+                    {advocate.yearsOfExperience}
+                  </td>
+                  <td>{advocate.phoneNumber}</td>
+                </tr>
+              );
+            },
+          )}
         </tbody>
       </table>
     </main>
