@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-interface Advocate {
+export interface Advocate {
+  id: number;
   firstName: string;
   lastName: string;
   city: string;
@@ -106,7 +107,7 @@ export default function Home() {
           {filteredAdvocates.map(
             (advocate: Advocate) => {
               return (
-                <tr key={advocate.phoneNumber}>
+                <tr key={advocate.id}>
                   <td>{advocate.firstName}</td>
                   <td>{advocate.lastName}</td>
                   <td>{advocate.city}</td>
