@@ -1,19 +1,13 @@
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
 import { advocateData } from "../../../db/seed/advocates";
-import { Advocate } from "../../page";
+import {
+  Advocate,
+  Database,
+  InsertQuery,
+} from "../../utilities/types";
 
 export async function POST() {
-  interface InsertQuery<T> {
-    values(data: T[]): {
-      returning(): Promise<T[]>;
-    };
-  }
-
-  interface Database {
-    insert<T>(table: unknown): InsertQuery<T>;
-  }
-
   const typedDb = db as Database;
   const records = await typedDb
     .insert<Advocate>(advocates)

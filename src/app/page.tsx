@@ -1,54 +1,23 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import { useState, useRef } from "react";
 import useSWR from "swr";
-
-export interface Advocate {
-  id: number;
-  firstName: string;
-  lastName: string;
-  city: string;
-  degree: string;
-  specialties: string[];
-  yearsOfExperience: number;
-  phoneNumber: number;
-}
+import { Advocate } from "./utilities/types";
+import { fetcher } from "./utilities/methods";
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState<
-    Advocate[]
-  >([]);
   const [searchTerm, setSearchTerm] =
     useState("");
   const searchInputRef =
     useRef<HTMLInputElement>(null);
 
-  interface AdvocatesApiResponse {
-    results: Advocate[];
-  }
-
   const { data, error, isLoading } = useSWR<
     Advocate[]
-  >(
-    `http://localhost:3000/api/advocates${
+  >(() => {
+    return `http://localhost:3000/api/advocates${
       searchTerm ? `?search=${searchTerm}` : ""
-    }`,
-    async (url: string): Promise<Advocate[]> =>
-      fetch(url)
-        .then(
-          (response: Response) =>
-            response.json() as Promise<AdvocatesApiResponse>,
-        )
-        .then((data: AdvocatesApiResponse) => {
-          console.log("data", data);
-          setAdvocates(data.results);
-          return data.results;
-        }),
-  );
+    }`;
+  }, fetcher);
 
   return (
     <main style={{ margin: "24px" }}>
@@ -66,14 +35,13 @@ export default function Home() {
             id="searchInput"
             ref={searchInputRef}
             style={{ border: "1px solid black" }}
-            onChange={(e) =>
-              setSearchTerm(e.target.value)
-            }
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+            }}
           />
         </p>
         <button
           onClick={() => {
-            console.log("searching...");
             setSearchTerm("");
             if (searchInputRef.current) {
               searchInputRef.current.value = "";
