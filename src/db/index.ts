@@ -5,14 +5,16 @@ const setup = () => {
   if (!process.env.DATABASE_URL) {
     console.error("DATABASE_URL is not set");
     return {
-      select: () => ({
+      select: (...args: any[]) => ({
         from: () => [],
       }),
     };
   }
 
   // for query purposes
-  const queryClient = postgres(process.env.DATABASE_URL);
+  const queryClient = postgres(
+    process.env.DATABASE_URL,
+  );
   const db = drizzle(queryClient);
   return db;
 };

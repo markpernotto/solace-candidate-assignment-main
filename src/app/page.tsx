@@ -1,23 +1,35 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import useSWR from "swr";
 import { Advocate } from "./utilities/types";
-import { fetcher } from "./utilities/methods";
+import {
+  constructUrl,
+  fetcher,
+} from "./utilities/methods";
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] =
-    useState("");
   const searchInputRef =
     useRef<HTMLInputElement>(null);
 
-  const { data, error, isLoading } = useSWR<
-    Advocate[]
-  >(() => {
-    return `http://localhost:3000/api/advocates${
-      searchTerm ? `?search=${searchTerm}` : ""
-    }`;
-  }, fetcher);
+  const { data, error, isLoading, mutate } =
+    useSWR<Advocate[] | string>(
+      constructUrl(
+        searchInputRef.current?.value ?? "",
+      ),
+      fetcher,
+    );
+
+  const handleInputChange = () => {
+    if (searchInputRef.current) {
+      mutate(
+        constructUrl(
+          searchInputRef.current.value,
+        ),
+        true,
+      );
+    }
+  };
 
   return (
     <main style={{ margin: "24px" }}>
@@ -35,16 +47,14 @@ export default function Home() {
             id="searchInput"
             ref={searchInputRef}
             style={{ border: "1px solid black" }}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-            }}
+            onChange={handleInputChange}
           />
         </p>
         <button
           onClick={() => {
-            setSearchTerm("");
             if (searchInputRef.current) {
               searchInputRef.current.value = "";
+              mutate(constructUrl(""), true);
             }
           }}
         >
@@ -54,7 +64,7 @@ export default function Home() {
       <br />
       <br />
       {error && <div>There is an error</div>}
-      {data && data.length > 0 ? (
+      {Array.isArray(data) && data.length > 0 ? (
         <table>
           <thead>
             <tr>
@@ -68,7 +78,7 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {data?.map((advocate: Advocate) => {
+            {data.map((advocate: Advocate) => {
               return (
                 <tr key={advocate.id}>
                   <td>{advocate.firstName}</td>

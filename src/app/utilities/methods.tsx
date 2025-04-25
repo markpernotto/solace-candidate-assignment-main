@@ -15,3 +15,15 @@ export const fetcher = async (
       (data: AdvocatesApiResponse) =>
         data.results,
     );
+
+export const constructUrl = (
+  searchInput: string,
+) => {
+  const advocatesEndpoint =
+    "http://localhost:3000/api/advocates";
+  return `${advocatesEndpoint}${
+    searchInput && searchInput.length > 0
+      ? "?search=" + searchInput
+      : ""
+  }`;
+};
