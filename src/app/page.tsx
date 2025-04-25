@@ -7,6 +7,10 @@ import {
   constructUrl,
   fetcher,
 } from "./utilities/methods";
+import SearchBar from "./components/SearchBar";
+import { Loading } from "./components/Loading";
+import { NoResultsFound } from "./components/NoResultsFound";
+import { Error } from "./components/Error";
 
 export default function Home() {
   const searchInputRef =
@@ -32,38 +36,23 @@ export default function Home() {
   };
 
   return (
-    <main style={{ margin: "24px" }}>
+    <main className="m-6">
       <h1>Solace Advocates</h1>
       <br />
       <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for:{" "}
-          <span id="search-term"></span>
-          <input
-            type="text"
-            placeholder="Search..."
-            id="searchInput"
-            ref={searchInputRef}
-            style={{ border: "1px solid black" }}
-            onChange={handleInputChange}
-          />
-        </p>
-        <button
-          onClick={() => {
-            if (searchInputRef.current) {
-              searchInputRef.current.value = "";
-              mutate(constructUrl(""), true);
-            }
-          }}
-        >
-          Reset Search
-        </button>
-      </div>
+      <SearchBar
+        ref={searchInputRef}
+        onInputChange={handleInputChange}
+        onReset={() => {
+          if (searchInputRef.current) {
+            searchInputRef.current.value = "";
+            mutate(constructUrl(""), true);
+          }
+        }}
+      />
       <br />
       <br />
-      {error && <div>There is an error</div>}
+      {error && <Error />}
       {Array.isArray(data) && data.length > 0 ? (
         <table>
           <thead>
@@ -102,9 +91,9 @@ export default function Home() {
           </tbody>
         </table>
       ) : isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
-        !error && <div>No Results Found</div>
+        !error && <NoResultsFound />
       )}
     </main>
   );
