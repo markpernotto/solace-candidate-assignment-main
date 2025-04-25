@@ -13,6 +13,14 @@ export interface AdvocatesApiResponse {
   results: Advocate[];
 }
 
+export interface AdvocatesData {
+  data: Advocate[];
+}
+
+export interface AdvocateSpecialtiesProps {
+  specialties: string[];
+}
+
 export interface Database {
   insert<T>(table: unknown): InsertQuery<T>;
 }
