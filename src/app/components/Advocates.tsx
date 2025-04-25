@@ -16,25 +16,19 @@ export const Advocates = ({
           return (
             <div
               key={advocate.id}
-              className="flex flex-col w-full gap-4 justify-between"
+              className="advocate-card"
             >
-              <div className="flex w-full justify-between">
-                <div className="flex-1">
+              <div className="advocate-row">
+                <div>
                   {advocate.lastName},{" "}
                   {advocate.firstName}
                 </div>
-                <div className="flex-1">
-                  {advocate.city}
-                </div>
-                <div className="flex-1">
-                  {advocate.degree}
-                </div>
-                <div className="flex-1">
+                <div>{advocate.city}</div>
+                <div>{advocate.degree}</div>
+                <div>
                   {advocate.yearsOfExperience}
                 </div>
-                <div className="flex-1">
-                  {advocate.phoneNumber}
-                </div>
+                <div>{advocate.phoneNumber}</div>
               </div>
               <AdvocateSpecialties
                 specialties={advocate.specialties}

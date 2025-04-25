@@ -39,8 +39,6 @@ export default function Home() {
   return (
     <main className="m-6">
       <h1>Solace Advocates</h1>
-      <br />
-      <br />
       <SearchBar
         ref={searchInputRef}
         onInputChange={handleInputChange}
@@ -51,8 +49,6 @@ export default function Home() {
           }
         }}
       />
-      <br />
-      <br />
       {error && <Error />}
       {Array.isArray(data) && data.length > 0 ? (
         <Advocates data={data} />

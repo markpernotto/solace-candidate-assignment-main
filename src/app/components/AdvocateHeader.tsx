@@ -1,6 +1,5 @@
 const columnHeaders = [
   "First Name",
-  "Last Name",
   "City",
   "Degree",
   "Years of Experience",
@@ -8,9 +7,11 @@ const columnHeaders = [
 ];
 export const AdvocateHeading = () => {
   return (
-    <div>
+    <div className="advocate-heading">
       {columnHeaders.map((header) => (
-        <div key={header}>{header}</div>
+        <div className="flex-1" key={header}>
+          {header}
+        </div>
       ))}
     </div>
   );
