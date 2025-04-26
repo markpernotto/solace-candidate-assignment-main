@@ -9,26 +9,20 @@ const SearchBar = forwardRef<
   HTMLInputElement,
   SearchBarProps
 >(({ onInputChange, onReset }, ref) => (
-  <div>
-    <p>Search</p>
-    <p>
-      <label
-        htmlFor="searchInput"
-        className="mr-2"
-      >
-        Searching for:{" "}
-      </label>
-      <input
-        type="text"
-        placeholder="Search for a name, city, degree, phone number or years of experience"
-        id="searchInput"
-        ref={ref}
-        className="border border-solid border-black rounded-md"
-        onChange={onInputChange}
-      />
-    </p>
-    <button onClick={onReset}>
-      Reset Search
+  <div className="items-center flex justify-between mx-2">
+    <input
+      type="text"
+      placeholder="Search for a name, city, degree, phone number or years of experience"
+      id="search-input"
+      ref={ref}
+      onChange={onInputChange}
+      autoFocus
+    />
+    <button
+      className="border bg-slate-400 text-gray-800 rounded-md p-2 m-2"
+      onClick={onReset}
+    >
+      Clear Search
     </button>
   </div>
 ));

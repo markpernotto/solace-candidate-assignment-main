@@ -6,12 +6,16 @@ body {
   @apply bg-gray-50 text-gray-900;
 }
 
+#search-input {
+  @apply border border-solid border-black flex rounded-md p-2 flex-1 h-10;
+}
+
 .advocate-heading {
-  @apply flex w-full text-lg font-bold text-gray-800 mb-4 p-4;
+  @apply flex w-full font-semibold text-gray-800 mb-2 p-2;
 }
 
 .advocate-card {
-  @apply bg-white drop-shadow-lg flex flex-col gap-2 rounded-lg p-4 mb-4;
+  @apply bg-white border border-solid border-gray-400 drop-shadow-lg flex flex-col gap-2 rounded-lg p-4 mb-4;
 }
 
 .advocate-row {

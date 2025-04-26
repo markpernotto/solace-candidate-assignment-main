@@ -16,6 +16,8 @@ import { Loading } from "./components/Loading";
 import { NoResultsFound } from "./components/NoResultsFound";
 import { Error } from "./components/Error";
 import { Advocates } from "./components/Advocates";
+import { AdvocateHeading } from "./components/AdvocateHeader";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const searchInputRef =
@@ -26,6 +28,7 @@ export default function Home() {
 
   const [allAdvocates, setAllAdvocates] =
     useState<Advocate[]>([]);
+  const existingSearchParam = useSearchParams();
 
   const { data, error, isLoading, mutate } =
     useSWR<Advocate[] | string>(
@@ -40,16 +43,42 @@ export default function Home() {
     if (Array.isArray(data) && data.length > 0) {
       window.scrollTo(0, yPosition);
       setAllAdvocates((prev) =>
-        page === 1 ? data : [...prev, ...data],
+        page === 1
+          ? data
+          : [...prev, ...data].reduce(
+              (
+                acc: Advocate[],
+                current: Advocate,
+              ) => {
+                if (
+                  !acc.some(
+                    (advocate: Advocate) =>
+                      advocate.id === current.id,
+                  )
+                ) {
+                  acc.push(current);
+                }
+                return acc;
+              },
+              [] as Advocate[],
+            ),
       );
     }
   }, [data, page, yPosition]);
 
   const handleInputChange = () => {
     if (searchInputRef.current) {
+      const searchParam =
+        existingSearchParam.get("search");
+
+      if (searchParam === null) {
+        setPage(1);
+      }
+
       mutate(
         constructUrl(
           searchInputRef.current.value,
+          searchParam ? page : 1,
         ),
         true,
       );
@@ -74,8 +103,8 @@ export default function Home() {
             process.env.NEXT_PUBLIC_MAX_ADVOCATES,
           )
       ) {
-        setPage((prev) => prev + 1);
         setYPosition(window.pageYOffset);
+        setPage((prev) => prev + 1);
       }
     };
 
@@ -90,29 +119,39 @@ export default function Home() {
       );
   }, [data, isLoading]);
 
+  const validAdvocates =
+    Array.isArray(allAdvocates) &&
+    allAdvocates.length > 0;
+
   return (
-    <main className="m-6">
-      <h1>Solace Advocates</h1>
-      <SearchBar
-        ref={searchInputRef}
-        onInputChange={handleInputChange}
-        onReset={() => {
-          if (searchInputRef.current) {
-            searchInputRef.current.value = "";
-            mutate(constructUrl(""), true);
-          }
-        }}
-      />
-      {error && <Error />}
-      {Array.isArray(data) && data.length > 0 ? (
-        <Advocates data={allAdvocates} />
-      ) : error ? (
-        <Error />
-      ) : isLoading ? (
-        <Loading />
-      ) : (
-        !error && <NoResultsFound />
-      )}
+    <main>
+      <div className="sticky top-0 bg-white w-full z-10 mt-2 px-6">
+        <h1>Solace Advocates</h1>
+        <SearchBar
+          ref={searchInputRef}
+          onInputChange={handleInputChange}
+          onReset={() => {
+            if (searchInputRef.current) {
+              searchInputRef.current.value = "";
+              mutate(constructUrl("", 1), true);
+              setYPosition(0);
+            }
+          }}
+        />
+        {validAdvocates && <AdvocateHeading />}
+      </div>
+      <div className="mx-6 my-2">
+        {error && <Error />}
+        {validAdvocates ? (
+          <Advocates data={allAdvocates} />
+        ) : error ? (
+          <Error />
+        ) : isLoading ? (
+          <Loading />
+        ) : (
+          !error && <NoResultsFound />
+        )}
+      </div>
     </main>
   );
 }

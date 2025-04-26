@@ -2,17 +2,15 @@ import {
   Advocate,
   AdvocatesData,
 } from "../utilities/types";
-import { AdvocateHeading } from "./AdvocateHeader";
 import { AdvocateSpecialties } from "./AdvocateSpecialties";
 
 export const Advocates = ({
   data,
 }: AdvocatesData) => {
   return (
-    <>
-      <AdvocateHeading />
-      <div className="flex flex-col gap-4 ">
-        {data.map((advocate: Advocate) => {
+    <div className="flex flex-col gap-2 ">
+      {Array.from(data).map(
+        (advocate: Advocate) => {
           return (
             <div
               key={advocate.id}
@@ -35,8 +33,8 @@ export const Advocates = ({
               />
             </div>
           );
-        })}
-      </div>
-    </>
+        },
+      )}
+    </div>
   );
 };
