@@ -75,6 +75,10 @@ export default function Home() {
         setPage(1);
       }
 
+      if (searchInputRef.current.value === "") {
+        setYPosition(0);
+      }
+
       mutate(
         constructUrl(
           searchInputRef.current.value,
