@@ -9,11 +9,24 @@ import { advocates } from "../../../db/schema";
 export async function GET(request: NextRequest) {
   const urlParams = request.nextUrl.searchParams;
   const search = urlParams.get("search");
+  const pageParam = urlParams.get("page");
+  const page = pageParam
+    ? parseInt(pageParam, 10)
+    : 1;
+
+  const offset =
+    (page - 1) *
+    Number(process.env.NEXT_PUBLIC_MAX_ADVOCATES);
 
   let results = await db
     .select()
     .from(advocates)
-    .limit(10);
+    .limit(
+      Number(
+        process.env.NEXT_PUBLIC_MAX_ADVOCATES,
+      ),
+    )
+    .offset(offset);
   if (search) {
     try {
       const searchTerm = search.toLowerCase();
@@ -46,7 +59,12 @@ export async function GET(request: NextRequest) {
             }`,
           ),
         )
-        .limit(10);
+        .limit(
+          Number(
+            process.env.NEXT_PUBLIC_MAX_ADVOCATES,
+          ),
+        )
+        .offset(offset);
     } catch (error: any | unknown) {
       return NextResponse.json(
         { error: error.message },

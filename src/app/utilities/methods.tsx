@@ -18,12 +18,22 @@ export const fetcher = async (
 
 export const constructUrl = (
   searchInput: string,
+  page?: number,
 ) => {
   const advocatesEndpoint =
     "http://localhost:3000/api/advocates";
+  const queryParts = [];
+
+  if (searchInput && searchInput.length > 0) {
+    queryParts.push("search=" + searchInput);
+  }
+  if (page !== undefined) {
+    queryParts.push("page=" + page);
+  }
+
   return `${advocatesEndpoint}${
-    searchInput && searchInput.length > 0
-      ? "?search=" + searchInput
+    queryParts.length > 0
+      ? "?" + queryParts.join("&")
       : ""
   }`;
 };
